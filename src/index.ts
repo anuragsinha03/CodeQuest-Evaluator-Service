@@ -14,9 +14,17 @@ app.listen(serverConfig.PORT, () => {
 	SampleWorker("SampleQueue");
 
 	sampleQueueProducer("SampleJob", {
+		name: "Kaushik",
+		company: "GOOG",
+		position: "SDE-2",
+		location: "HYD"
+	}, 2) //priority = 2 (LESSER)
+
+	sampleQueueProducer("SampleJob", {
 		name: "Anurag",
 		company: "MSFT",
 		position: "SDE-1",
 		location: "Remote | BLR | NCR"
-	})
+	}, 1) // priority = 1 (GREATER)
+	
 });
