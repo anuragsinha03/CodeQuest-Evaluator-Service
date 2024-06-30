@@ -1,6 +1,6 @@
 import { addSubmission } from "../../controllers/submissionController";
 import { createSubmissionZODSchema } from "../../dtos/CreateSubmissionDTO";
-import { validate } from "../../validators/createSubmissionValidator";
+import { validate } from "../../validators/zodValidator";
 
 const express = require("express");
 
