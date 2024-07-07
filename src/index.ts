@@ -4,6 +4,7 @@ import apiRouter from "./routes";
 import sampleQueueProducer from "./producers/sampleQueueProducer";
 import SampleWorker from "./workers/SampleWorker";
 import bullBoardAdapter from "./config/bullBoardConfig";
+import runPython from "./containers/runPythonDocker";
 
 const app: Express = express();
 
@@ -22,25 +23,40 @@ app.listen(serverConfig.PORT, () => {
 
 	SampleWorker("SampleQueue");
 
-	sampleQueueProducer(
-		"SampleJob",
-		{
-			name: "Kaushik",
-			company: "GOOG",
-			position: "SDE-2",
-			location: "HYD",
-		},
-		2
-	); //priority = 2 (LESSER)
+	// const code = `pritnt("hello anurag")`; // This code has syntax error so it will give stderr stream as output
+	// const code = `print("hello anurag")`; // This code will give stdout as output stream
 
-	sampleQueueProducer(
-		"SampleJob",
-		{
-			name: "Anurag",
-			company: "MSFT",
-			position: "SDE-1",
-			location: "Remote | BLR | NCR",
-		},
-		1
-	); // priority = 1 (GREATER)
+	const code = `
+x = input()
+y = input()
+print("value of x is ", x)
+print("value of y is ", y)
+`;
+
+	const inputCase = `100
+200
+`;
+
+	runPython(code, inputCase);
+	// sampleQueueProducer(
+	// 	"SampleJob",
+	// 	{
+	// 		name: "Kaushik",
+	// 		company: "GOOG",
+	// 		position: "SDE-2",
+	// 		location: "HYD",
+	// 	},
+	// 	2
+	// ); //priority = 2 (LESSER)
+
+	// sampleQueueProducer(
+	// 	"SampleJob",
+	// 	{
+	// 		name: "Anurag",
+	// 		company: "MSFT",
+	// 		position: "SDE-1",
+	// 		location: "Remote | BLR | NCR",
+	// 	},
+	// 	1
+	// ); // priority = 1 (GREATER)
 });
