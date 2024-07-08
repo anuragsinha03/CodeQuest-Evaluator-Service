@@ -1,50 +1,43 @@
 import Docker from "dockerode";
 import createContainer from "./containerFactory";
 import { TestCases } from "../types/testCases";
-import { PYTHON_IMAGE } from "../utils/constants";
+import { JAVA_IMAGE } from "../utils/constants";
 import decodeDockerStream from "./dockerHelper";
 import pullImage from "./pullImage";
 
-async function runPython(code: string, inputTestCase: string) {
+async function runJava(code: string, inputTestCase: string) {
 	const rawLogBuffer: Buffer[] = [];
 
 	// Automatically download the docker image required to run the code
-	await pullImage(PYTHON_IMAGE);
+	await pullImage(JAVA_IMAGE);
 
-	console.log("Initialising a new python docker container");
+	console.log("Initialising a new java docker container");
 
 	const runCommand = `echo '${code.replace(
 		/'/g,
 		`'||"`
-	)}' > test.py && echo '${inputTestCase.replace(
+	)}' > Main.java && javac Main.java && echo '${inputTestCase.replace(
 		/'/g,
 		`'||"`
-	)}' | python3 test.py`;
+	)}' | java Main`;
 
-	// const pythonDockerContainer = await createContainer(PYTHON_IMAGE, [
-	// 	"python3",
-	// 	"-c",
-	// 	code,
-	// 	"stty -echo",
-	// ]);
-
-	const pythonDockerContainer = await createContainer(PYTHON_IMAGE, [
+	const javaDockerContainer = await createContainer(JAVA_IMAGE, [
 		"/bin/sh",
 		"-c",
 		runCommand,
 	]);
 
 	//starting the python docker container
-	await pythonDockerContainer.start();
+	await javaDockerContainer.start();
 
 	console.log("started the docker container");
 
 	//attaching log stream to the created container
-	const loggerStream = await pythonDockerContainer.logs({
+	const loggerStream = await javaDockerContainer.logs({
 		stdout: true,
 		stderr: true,
 		timestamps: false,
-		follow: true, //wheter the logs are streamed (true) or returned as a string (false)
+		follow: true, //whether the logs are streamed (true) or returned as a string (false)
 	});
 
 	//attach events on the stream objects to start and stop reading
@@ -64,10 +57,10 @@ async function runPython(code: string, inputTestCase: string) {
 	});
 
 	//after execution of the code, remove the container automatically
-	await pythonDockerContainer.remove();
+	await javaDockerContainer.remove();
 
 	//return the started container
-	return pythonDockerContainer;
+	return javaDockerContainer;
 }
 
-export default runPython;
+export default runJava;

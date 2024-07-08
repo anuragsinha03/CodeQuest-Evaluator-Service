@@ -5,6 +5,8 @@ import sampleQueueProducer from "./producers/sampleQueueProducer";
 import SampleWorker from "./workers/SampleWorker";
 import bullBoardAdapter from "./config/bullBoardConfig";
 import runPython from "./containers/runPythonDocker";
+import runJava from "./containers/runJavaDocker";
+import runCpp from "./containers/runCpp";
 
 const app: Express = express();
 
@@ -26,16 +28,30 @@ app.listen(serverConfig.PORT, () => {
 	// const code = `pritnt("hello anurag")`; // This code has syntax error so it will give stderr stream as output
 	// const code = `print("hello anurag")`; // This code will give stdout as output stream
 
+	// 	const code = `
+	// #include<iostream>
+	// using namespace std;
+
+	// int main(){
+	// 	int x;
+	// 	cin>>x;
+	// 	cout<<"Value of x is: "<<x<<endl;
+	// 	for(int i=0; i<x; i++){
+	// 		cout<<i << " ";
+	// 	}
+	// 	cout<<endl;
+	// 	return 0;
+	// }
+	// `;
+
 	const code = `
 x = input()
-y = input()
-print("value of x is ", x)
-print("value of y is ", y)
+print("User has given input as: ", x)
+for i in range(int(x)):
+	print(i);
 `;
 
-	const inputCase = `100
-200
-`;
+	const inputCase = `10`;
 
 	runPython(code, inputCase);
 	// sampleQueueProducer(
