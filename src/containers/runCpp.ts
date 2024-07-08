@@ -45,22 +45,21 @@ async function runCpp(code: string, inputTestCase: string) {
 		rawLogBuffer.push(chunk);
 	});
 
-	await new Promise((resolve, reject) => {
+	const response = await new Promise((resolve, reject) => {
 		loggerStream.on("end", () => {
 			console.log(rawLogBuffer);
 			const completeBuffer = Buffer.concat(rawLogBuffer);
 			const decodedStream = decodeDockerStream(completeBuffer);
 			console.log(decodedStream);
 			console.log(decodedStream.stdout);
-			resolve(decodeDockerStream);
+			resolve(decodedStream);
 		});
 	});
 
 	//after execution of the code, remove the container automatically
 	await cppDockerContainer.remove();
 
-	//return the started container
-	return cppDockerContainer;
+	return response;
 }
 
 export default runCpp;

@@ -7,6 +7,9 @@ import bullBoardAdapter from "./config/bullBoardConfig";
 import runPython from "./containers/runPythonDocker";
 import runJava from "./containers/runJavaDocker";
 import runCpp from "./containers/runCpp";
+import SubmissionWorker from "./workers/SubmissionWorker";
+import { submission_queue } from "./utils/constants";
+import submissionQueueProducer from "./producers/submissionQueueProducer";
 
 const app: Express = express();
 
@@ -24,6 +27,29 @@ app.listen(serverConfig.PORT, () => {
 	);
 
 	SampleWorker("SampleQueue");
+	SubmissionWorker(submission_queue);
+
+	submissionQueueProducer({
+		"1234": {
+			language: "CPP",
+			code: `
+	#include<iostream>
+	using namespace std;
+
+	int main(){
+		int x;
+		cin>>x;
+		cout<<"Value of x is: "<<x<<endl;
+		for(int i=0; i<x; i++){
+			cout<<i << " ";
+		}
+		cout<<endl;
+		return 0;
+	}
+	`,
+			inputCase: `10`,
+		},
+	});
 
 	// const code = `pritnt("hello anurag")`; // This code has syntax error so it will give stderr stream as output
 	// const code = `print("hello anurag")`; // This code will give stdout as output stream
@@ -44,16 +70,17 @@ app.listen(serverConfig.PORT, () => {
 	// }
 	// `;
 
-	const code = `
-x = input()
-print("User has given input as: ", x)
-for i in range(int(x)):
-	print(i);
-`;
+	// 	const code = `
+	// x = input()
+	// print("User has given input as: ", x)
+	// for i in range(int(x)):
+	// 	print(i);
+	// `;
 
-	const inputCase = `10`;
+	// 	const inputCase = `10`;
 
-	runPython(code, inputCase);
+	// 	runPython(code, inputCase);
+
 	// sampleQueueProducer(
 	// 	"SampleJob",
 	// 	{
