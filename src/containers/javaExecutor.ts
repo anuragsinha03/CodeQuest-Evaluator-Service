@@ -7,6 +7,7 @@ import pullImage from "./pullImage";
 import CodeExecutorStrategy, {
 	ExecutionResponse,
 } from "../types/CodeExecutorStrategy";
+import Dockerode from "dockerode";
 
 class JavaExecutor implements CodeExecutorStrategy {
 	async execute(
@@ -61,9 +62,17 @@ class JavaExecutor implements CodeExecutorStrategy {
 				rawLogBuffer
 			);
 
-			return { output: codeResponse, status: "COMPLETED" };
+			if (codeResponse.trim() === outputTestCase.trim()) {
+				return { output: codeResponse, status: "SUCCESS" };
+			} else {
+				return { output: codeResponse, status: "WA" };
+			}
 		} catch (error) {
-			return { output: error as string, status: "Error" };
+			console.log("Error Occured: ", error);
+			if (error === "TLE") {
+				await javaDockerContainer.kill();
+			}
+			return { output: error as string, status: "ERROR" };
 		} finally {
 			//after execution of the code, remove the container automatically
 			await javaDockerContainer.remove();
@@ -74,13 +83,22 @@ class JavaExecutor implements CodeExecutorStrategy {
 		loggerStream: NodeJS.ReadableStream,
 		rawLogBuffer: Buffer[]
 	): Promise<string> {
+		// Todo: May be moved to the dockerHelper.ts
+
 		return new Promise((resolve, reject) => {
+			const timeout = setTimeout(() => {
+				console.log("Timeout called");
+				reject("TLE");
+			}, 6000);
+
 			loggerStream.on("end", () => {
-				console.log(rawLogBuffer);
+				// This callback executes when the stream ends
+				clearTimeout(timeout);
+				// console.log(rawLogBuffer);
 				const completeBuffer = Buffer.concat(rawLogBuffer);
 				const decodedStream = decodeDockerStream(completeBuffer);
-				console.log(decodedStream);
-				console.log(decodedStream.stdout);
+				// console.log(decodedStream);
+				// console.log(decodedStream.stdout);
 				if (decodedStream.stderr) {
 					reject(decodedStream.stderr);
 				} else {
