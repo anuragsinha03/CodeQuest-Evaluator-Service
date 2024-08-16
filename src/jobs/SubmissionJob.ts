@@ -1,7 +1,7 @@
 import { Job } from "bullmq";
+import evaluationQueueProducer from "../producers/evaluationQueueProducer";
 import { IJob } from "../types/bullMqJobDefinition";
 import { SubmissionPayload } from "../types/submissionPayload";
-import runCpp from "../containers/cppExecutor";
 import createExecutor from "../utils/ExecutorFactory";
 import { ExecutionResponse } from "../types/CodeExecutorStrategy";
 
@@ -32,7 +32,13 @@ export default class SubmissionJob implements IJob {
 					outputTestCase
 				);
 
-				if (response.status === "COMPLETED") {
+				// console.log("SUBMISSIONID: ", this.payload[key].submissionId);
+				evaluationQueueProducer({
+					response,
+					userId: this.payload[key].userId,
+					submissionId: this.payload[key].submissionId,
+				});
+				if (response.status === "SUCCESS") {
 					console.log("Code executed successfully");
 					console.log(response);
 				} else {
