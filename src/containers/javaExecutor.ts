@@ -71,8 +71,9 @@ class JavaExecutor implements CodeExecutorStrategy {
 			console.log("Error Occured: ", error);
 			if (error === "TLE") {
 				await javaDockerContainer.kill();
+				return { output: error as string, status: "TLE" };
 			}
-			return { output: error as string, status: "ERROR" };
+			return { output: error as string, status: "RE" };
 		} finally {
 			//after execution of the code, remove the container automatically
 			await javaDockerContainer.remove();
