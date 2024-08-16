@@ -29,27 +29,27 @@ app.listen(serverConfig.PORT, () => {
 	SampleWorker("SampleQueue");
 	SubmissionWorker(submission_queue);
 
-	submissionQueueProducer({
-		"1234": {
-			language: "CPP",
-			code: `
-	#include<iostream>
-	using namespace std;
+	// submissionQueueProducer({
+	// 	"1234": {
+	// 		language: "CPP",
+	// 		code: `
+	// #include<iostream>
+	// using namespace std;
 
-	int main(){
-		int x;
-		cin>>x;
-		cout<<"Value of x is: "<<x<<endl;
-		for(int i=0; i<x; i++){
-			cout<<i << " ";
-		}
-		cout<<endl;
-		return 0;
-	}
-	`,
-			inputCase: `10`,
-		},
-	});
+	// int main(){
+	// 	int x;
+	// 	cin>>x;
+	// 	cout<<"Value of x is: "<<x<<endl;
+	// 	for(int i=0; i<x; i++){
+	// 		cout<<i << " ";
+	// 	}
+	// 	cout<<endl;
+	// 	return 0;
+	// }
+	// `,
+	// 		inputCase: `10`,
+	// 	},
+	// });
 
 	// const code = `pritnt("hello anurag")`; // This code has syntax error so it will give stderr stream as output
 	// const code = `print("hello anurag")`; // This code will give stdout as output stream

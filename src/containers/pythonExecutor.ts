@@ -9,8 +9,11 @@ import CodeExecutorStrategy, {
 class PythonExecutor implements CodeExecutorStrategy {
 	async execute(
 		code: string,
-		inputTestCase: string
+		inputTestCase: string,
+		outputTestCase: string
 	): Promise<ExecutionResponse> {
+		console.log(code, inputTestCase, outputTestCase);
+
 		const rawLogBuffer: Buffer[] = [];
 
 		// Automatically download the docker image required to run the code
