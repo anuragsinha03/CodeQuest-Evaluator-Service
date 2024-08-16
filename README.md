@@ -1,6 +1,7 @@
 # CodeQuest Evaluator Service - (CodeQuest)
 --------------------------------------------
-![CodeQuest-HLD](/diagrams/CodeQuest-HLD.jpeg)
+![CodeQuest-HLD](/diagrams/HighLevelDesign.JPG)
+![CodeQuest-WorkFlow](/diagrams/WorkFlow.JPG)
 
 --------------------------------------------
 ## How Docker is integrated in the project
